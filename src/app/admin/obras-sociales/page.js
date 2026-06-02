@@ -32,6 +32,8 @@ export default function AdminObrasSocialesPage() {
   const [formNombre, setFormNombre] = useState('');
   const [errNombre, setErrNombre] = useState('');
   const [loadingCrear, setLoadingCrear] = useState(false);
+  const [planesNuevos, setPlanesNuevos] = useState([]);
+  const [inputPlan, setInputPlan] = useState('');
 
   // Modal coberturas
   const [obraActiva, setObraActiva] = useState(null);
@@ -54,14 +56,29 @@ export default function AdminObrasSocialesPage() {
 
   useEffect(() => { cargar(); }, []);
 
+  //para agregar/quitar un plan a la obra social
+  const handleAgregarPlan = () => {
+    const nombre = inputPlan.trim();
+    if (!nombre) return;
+    if (planesNuevos.find(p => p.nombre.toLowerCase() === nombre.toLowerCase())) return;
+    setPlanesNuevos(prev => [...prev, { nombre }]);
+    setInputPlan('');
+  };
+ 
+  const handleQuitarPlan = (nombre) => {
+    setPlanesNuevos(prev => prev.filter(p => p.nombre !== nombre));
+  };
+
   const handleCrear = async () => {
     if (!formNombre.trim()) { setErrNombre('El nombre es obligatorio.'); return; }
     setLoadingCrear(true);
     try {
-      await crearObraSocial({ nombre: formNombre });
+      await crearObraSocial({ nombre: formNombre, planes: planesNuevos });
       addToast('Obra social creada.', 'success');
       setModalCrear(false);
       setFormNombre('');
+      setPlanesNuevos([]);
+      setInputPlan('');
       cargar();
     } catch (err) {
       addToast(err.message || 'Error al crear.', 'error');
@@ -131,7 +148,7 @@ export default function AdminObrasSocialesPage() {
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Obras Sociales</h1>
-        <Button onClick={() => { setFormNombre(''); setErrNombre(''); setModalCrear(true); }}>
+        <Button onClick={() => { setFormNombre(''); setErrNombre(''); setPlanesNuevos([]); setInputPlan(''); setModalCrear(true); }}>
           + Nueva obra social
         </Button>
       </div>
@@ -172,7 +189,7 @@ export default function AdminObrasSocialesPage() {
       {/* Modal crear */}
       <Modal
         isOpen={modalCrear}
-        onClose={() => setModalCrear(false)}
+        onClose={() => { setModalCrear(false); setPlanesNuevos([]); setInputPlan(''); }}
         title="Nueva obra social"
         footer={
           <>
@@ -181,11 +198,55 @@ export default function AdminObrasSocialesPage() {
           </>
         }
       >
-        <Input id="os-nombre" label="Nombre de la obra social *"
-          value={formNombre}
-          onChange={e => { setFormNombre(e.target.value); setErrNombre(''); }}
-          error={errNombre}
-          placeholder="Ej: OSDE" />
+        <div className="space-y-4">
+          <Input id="os-nombre" label="Nombre de la obra social *"
+            value={formNombre}
+            onChange={e => { setFormNombre(e.target.value); setErrNombre(''); }}
+            error={errNombre}
+            placeholder="Ej: OSDE" />
+ 
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-2">Planes</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={inputPlan}
+                onChange={e => setInputPlan(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAgregarPlan(); } }}
+                placeholder="Ej: Plan 210"
+                aria-label="Nombre del plan"
+                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900
+                  focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <Button variant="secondary" size="sm" onClick={handleAgregarPlan} type="button">
+                + Agregar
+              </Button>
+            </div>
+ 
+            {planesNuevos.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {planesNuevos.map(p => (
+                  <span
+                    key={p.nombre}
+                    className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700"
+                  >
+                    {p.nombre}
+                    <button
+                      onClick={() => handleQuitarPlan(p.nombre)}
+                      aria-label={`Quitar plan ${p.nombre}`}
+                      className="ml-0.5 hover:text-red-600 focus-visible:outline-none"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+            {planesNuevos.length === 0 && (
+              <p className="mt-1 text-xs text-gray-400">Sin planes — podés agregarlos ahora o después desde "Coberturas".</p>
+            )}
+          </div>
+        </div>
       </Modal>
 
       {/* Modal coberturas */}
@@ -207,7 +268,7 @@ export default function AdminObrasSocialesPage() {
             {planes.map((plan, planIdx) => (
               <fieldset key={planIdx} className="rounded-lg border border-gray-200 p-4">
                 <legend className="px-2 text-sm font-semibold text-gray-800">{plan.nombre}</legend>
-
+ 
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Especialidades</p>
                 <div className="space-y-2 mb-4">
                   {especialidades.map(esp => (
@@ -234,7 +295,7 @@ export default function AdminObrasSocialesPage() {
                     </div>
                   ))}
                 </div>
-
+ 
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Prácticas</p>
                 <div className="space-y-2">
                   {practicas.map(prac => (

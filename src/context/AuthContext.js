@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
   // TESTING P5: cambiar PACIENTE_PRUEBA por MEDICO_PRUEBA para testear panel médico
 
   return (
-    <AuthContext.Provider value={PACIENTE_PRUEBA}> //cambiarlo aca
+    <AuthContext.Provider value={PACIENTE_PRUEBA}> {/* cambiarlo aca */}
       {children}
     </AuthContext.Provider>
   );
