@@ -1,4 +1,4 @@
-// TODO: ABM médicos (CRUD + asignar especialidades/prácticas/sedes)
+﻿// TODO: ABM médicos (CRUD + asignar especialidades/prácticas/sedes)
 'use client';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/context/ToastContext';
@@ -9,6 +9,7 @@ import {
   agregarSede, quitarSede,
 } from '@/services/medico';
 import { getEspecialidades, getPracticas, getSedes } from '@/services/catalogo';
+import { validatePassword } from '@/utils/validators';
 import Card, { CardBody, CardHeader } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -20,13 +21,13 @@ import { SkeletonCard } from '@/components/ui/Skeleton';
 // Subcomponente: chip de asignación con botón de quitar
 function ChipAsignacion({ label, onQuitar, cargando }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+    <span className="inline-flex items-center gap-1 rounded-full bg-primary-light px-2.5 py-0.5 text-xs font-medium text-[#C83444]">
       {label}
       <button
         onClick={onQuitar}
         disabled={cargando}
         aria-label={`Quitar ${label}`}
-        className="ml-0.5 rounded-full hover:text-red-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500"
+        className="ml-0.5 rounded-full hover:text-red-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-coral-dark"
       >
         ×
       </button>
@@ -68,8 +69,8 @@ export default function AdminMedicosPage() {
       setEspecialidades(Array.isArray(e) ? e : []);
       setPracticas(Array.isArray(p) ? p : []);
       setSedes(Array.isArray(s) ? s : []);
-    } catch {
-      addToast('Error al cargar los datos.', 'error');
+    } catch (err) {
+      addToast(err.message, 'error');
     } finally {
       setLoading(false);
     }
@@ -96,7 +97,8 @@ export default function AdminMedicosPage() {
     if (!formMatricula.trim()) e.matricula = 'La matrícula es obligatoria.';
     if (modal.modo === 'crear') {
       if (!formUsuario.trim()) e.usuario = 'El usuario es obligatorio.';
-      if (!formPassword.trim()) e.password = 'La contraseña es obligatoria.';
+      const pwdError = validatePassword(formPassword);
+      if (pwdError) e.password = pwdError;
     }
     if (Object.keys(e).length) { setErroresForm(e); return; }
     setLoadingForm(true);
@@ -111,7 +113,7 @@ export default function AdminMedicosPage() {
       setModal(null);
       cargar();
     } catch (err) {
-      addToast(err.message || 'Error al guardar.', 'error');
+      addToast(err.message, 'error');
     } finally {
       setLoadingForm(false);
     }
@@ -125,7 +127,7 @@ export default function AdminMedicosPage() {
       if (medicoActivo?._id === medico._id) setMedicoActivo(null);
       cargar();
     } catch (err) {
-      addToast(err.message || 'No se pudo eliminar. El médico puede tener turnos futuros.', 'error');
+      addToast(err.message, 'error');
     }
   };
 
@@ -143,7 +145,7 @@ export default function AdminMedicosPage() {
       setMedicos(lista);
       setMedicoActivo(lista.find(m => m._id === medicoActivo._id) ?? medicoActivo);
     } catch (err) {
-      addToast(err.message || `Error al asignar ${tipo}.`, 'error');
+      addToast(err.message, 'error');
     } finally {
       setLoadingAsig(false);
     }
@@ -162,7 +164,7 @@ export default function AdminMedicosPage() {
       setMedicos(lista);
       setMedicoActivo(lista.find(m => m._id === medicoActivo._id) ?? medicoActivo);
     } catch (err) {
-      addToast(err.message || `No se pudo desasignar. Puede haber turnos futuros asociados.`, 'error');
+      addToast(err.message, 'error');
     } finally {
       setLoadingAsig(false);
     }
@@ -186,7 +188,7 @@ export default function AdminMedicosPage() {
             medicos.map(m => (
               <Card
                 key={m._id}
-                className={medicoActivo?._id === m._id ? 'ring-2 ring-blue-500' : ''}
+                className={medicoActivo?._id === m._id ? 'ring-2 ring-coral-dark' : ''}
               >
                 <CardBody>
                   <div className="flex items-start justify-between gap-2">

@@ -1,0 +1,51 @@
+SWEET MEDICAL — PALETA DE COLORES
+==================================
+
+FICHAS (TILES)
+--------------
+Coral claro      #EE6B76    (inicio degradado coral)
+Coral oscuro     #E0414F    (fin degradado coral)
+Rosa claro       #F7AEB5    (inicio degradado rosa)
+Rosa medio       #EE8A95    (fin degradado rosa)
+
+Dirección de los degradados: 150° (arriba-izquierda → abajo-derecha)
+
+
+RAYAS DEL CARAMELO
+------------------
+Raya oscura      #F2929C
+Raya clara       #F8B7BE
+
+
+DETALLES DE LOS ICONOS
+----------------------
+Espiral paleta   #F37D8A
+Osito claro      #F0596A
+Osito oscuro     #D7263D
+Corazón claro    #FBA7C0
+Corazón oscuro   #F06A92
+
+
+TEXTO
+-----
+Tinta del nombre #4A3D42
+
+
+FONDO
+-----
+Blanco base      #FBFBFC
+
+
+VARIANTES DE PALETA (Tweaks)
+----------------------------
+Original (coral/rosa)
+  #EE6B76  #E0414F  #F7AEB5  #EE8A95
+
+Rosa chicle
+  #F2849B  #E45C7E  #FBC0CD  #F49AAE
+
+Durazno / coral cálido
+  #F08A5D  #E5673C  #F9C5A8  #F2A582
+
+Azul
+  #8FB3E0  #5E84C2  #BFD6F0  #9DBEE8

@@ -17,8 +17,10 @@ export function PreseleccionProvider({ children }) {
     setTurnos((prev) => prev.filter(t => t.id !== turnoId));
   };
 
+  const clearTurnos = () => setTurnos([]);
+
   return (
-    <PreseleccionContext.Provider value={{ turnos, addTurno, removeTurno }}>
+    <PreseleccionContext.Provider value={{ turnos, addTurno, removeTurno, clearTurnos }}>
       {children}
     </PreseleccionContext.Provider>
   );

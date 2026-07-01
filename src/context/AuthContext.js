@@ -1,34 +1,56 @@
 'use client';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
-// TODO: reemplazar con login real (POST /pacientes o auth mockeado)
-// ID del paciente de prueba cargado en la DB
-const PACIENTE_PRUEBA = {
-  _id: '6a1c491cadb53a186718b624',
-  nombre: 'Paciente Test',
-  rol: 'paciente',
-};
-
-// ID del medico de prueba cargado en la DB
-const MEDICO_PRUEBA = {
-  _id: '6a1da3580687ba0250e4439f', 
-  nombre: 'Medico Test',
-  rol: 'medico',
-};
-
-const AuthContext = createContext(PACIENTE_PRUEBA);
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  // TODO P4: agregar useState con usuario real y lógica de login/logout
-  // TESTING P5: cambiar PACIENTE_PRUEBA por MEDICO_PRUEBA para testear panel médico
+  const [paciente, setPaciente] = useState(null);
+  const [rol, setRol] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('sm_paciente');
+      if (stored) setPaciente(JSON.parse(stored));
+      const storedRol = localStorage.getItem('sm_rol');
+      if (storedRol) setRol(storedRol);
+    } catch { /* ignorar */ }
+    setLoading(false);
+  }, []);
+
+  const login = ({ token, rol: rolRecibido, paciente: pacienteData, medico: medicoData }) => {
+    const entidad = pacienteData || medicoData;
+    const entidadConRol = { ...entidad, rol: rolRecibido };
+    setPaciente(entidadConRol);
+    setRol(rolRecibido);
+    localStorage.setItem('sm_paciente', JSON.stringify(entidadConRol));
+    localStorage.setItem('sm_token', token);
+    localStorage.setItem('sm_rol', rolRecibido);
+  };
+
+  const logout = () => {
+    setPaciente(null);
+    setRol(null);
+    localStorage.removeItem('sm_paciente');
+    localStorage.removeItem('sm_token');
+    localStorage.removeItem('sm_rol');
+  };
+
+  const updateUsuario = (entidad) => {
+    const entidadConRol = { ...entidad, rol: entidad.rol || rol };
+    setPaciente(entidadConRol);
+    localStorage.setItem('sm_paciente', JSON.stringify(entidadConRol));
+  };
 
   return (
-    <AuthContext.Provider value={PACIENTE_PRUEBA}> {/* cambiarlo aca */}
+    <AuthContext.Provider value={{ paciente, usuario: paciente, rol, login, logout, updateUsuario, loading }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
+  return ctx;
 }

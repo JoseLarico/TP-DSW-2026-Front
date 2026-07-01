@@ -1,10 +1,13 @@
 'use client';
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Button from './Button';
 
 const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
-export default function Modal({ isOpen, onClose, title, children, footer }) {
+const SIZES = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-3xl' };
+
+export default function Modal({ isOpen, onClose, title, children, footer, size = 'md' }) {
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -39,7 +42,7 @@ export default function Modal({ isOpen, onClose, title, children, footer }) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
@@ -54,7 +57,7 @@ export default function Modal({ isOpen, onClose, title, children, footer }) {
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className="relative w-full max-w-lg rounded-xl bg-white shadow-xl focus:outline-none"
+        className={`relative w-full ${SIZES[size] ?? SIZES.md} rounded-xl bg-white shadow-xl focus:outline-none`}
       >
         <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
           <h2 id="modal-title" className="text-lg font-semibold text-gray-900">
@@ -77,6 +80,7 @@ export default function Modal({ isOpen, onClose, title, children, footer }) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

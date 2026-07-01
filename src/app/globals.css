@@ -1,18 +1,44 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap');
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
 
-  /* Design tokens Sweet Medical */
-  --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
-  --color-primary-light: #dbeafe;
+  /* ── Sweet Medical — Brand Colors ─────────────────────────── */
 
+  /* Tiles / fichas */
+  --color-coral-light:  #EE6B76;
+  --color-coral-dark:   #E0414F;
+  --color-rosa-light:   #F7AEB5;
+  --color-rosa-mid:     #EE8A95;
+
+  /* Candy stripes */
+  --color-stripe-dark:  #F2929C;
+  --color-stripe-light: #F8B7BE;
+
+  /* Icon details */
+  --color-spiral:       #F37D8A;
+  --color-bear-light:   #F0596A;
+  --color-bear-dark:    #D7263D;
+  --color-heart-light:  #FBA7C0;
+  --color-heart-dark:   #F06A92;
+
+  /* Brand text & background */
+  --color-ink:          #4A3D42;
+  --color-base:         #FBFBFC;
+
+  /* ── Primary (coral) — usado en botones, links, active states */
+  --color-primary:      #E0414F;
+  --color-primary-hover:#C83444;
+  --color-primary-light:#FBE9EC;
+
+  /* ── Semantic ────────────────────────────────────────────── */
   --color-success: #16a34a;
-  --color-error: #dc2626;
+  --color-error:   #dc2626;
   --color-warning: #d97706;
 
-  --color-gray-50: #f9fafb;
+  /* ── Grays ───────────────────────────────────────────────── */
+  --color-gray-50:  #f9fafb;
   --color-gray-100: #f3f4f6;
   --color-gray-200: #e5e7eb;
   --color-gray-300: #d1d5db;
@@ -30,13 +56,18 @@
   box-sizing: border-box;
 }
 
+button:not(:disabled),
+a {
+  cursor: pointer;
+}
+
 /* Skip link para accesibilidad con teclado */
 .skip-link {
   position: absolute;
   top: -100%;
   left: 0;
   padding: 0.5rem 1rem;
-  background: #2563eb;
+  background: #E0414F;
   color: white;
   font-size: 0.875rem;
   font-weight: 600;
@@ -50,8 +81,8 @@
 
 /* Buscar filters bar */
 .filters-bar {
-  background: #bfdbfe; /* slightly deeper than --color-primary-light */
-  border: 1px solid rgba(29,78,216,0.12);
+  background: #FBE9EC;
+  border: 1px solid rgba(224,65,79,0.15);
   padding: 1rem;
   box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset;
 }
@@ -70,9 +101,14 @@
   padding-right: 1rem;
   background: #ffffff;
   color: #000000;
-  border: 1px solid rgba(29,78,216,0.12);
+  border: 1px solid rgba(224,65,79,0.12);
   border-radius: 0.375rem;
   box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+  cursor: pointer;
+}
+
+.btn {
+  cursor: pointer;
 }
 
 /* Give selects and inputs inside the filters bar a visible border (recuadre) */

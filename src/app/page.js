@@ -1,12 +1,14 @@
+﻿'use client';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
+import { useAuth } from '@/context/AuthContext';
 
 const FEATURES = [
   {
     title: 'Buscá por especialidad',
     desc: 'Filtrá turnos por especialidad, práctica, médico o sede según tu cobertura.',
     icon: (
-      <svg className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <svg className="h-8 w-8 text-coral-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
       </svg>
     ),
@@ -15,7 +17,7 @@ const FEATURES = [
     title: 'Reservá en segundos',
     desc: 'Preseleccioná los turnos que te interesan y confirmalos con un clic.',
     icon: (
-      <svg className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <svg className="h-8 w-8 text-coral-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
       </svg>
     ),
@@ -24,7 +26,7 @@ const FEATURES = [
     title: 'Seguí tus turnos',
     desc: 'Gestioná, cancelá o modificá tus turnos desde tu panel personal.',
     icon: (
-      <svg className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <svg className="h-8 w-8 text-coral-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
@@ -32,6 +34,8 @@ const FEATURES = [
 ];
 
 export default function HomePage() {
+  const { usuario } = useAuth();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="text-center">
@@ -45,9 +49,15 @@ export default function HomePage() {
           <Link href="/buscar">
             <Button size="lg">Buscar turno</Button>
           </Link>
-          <Link href="/login">
-            <Button size="lg" variant="secondary">Iniciar sesión</Button>
-          </Link>
+          {usuario ? (
+            <Link href={usuario.rol === 'medico' ? '/medico/turnos' : '/mis-turnos'}>
+              <Button size="lg" variant="secondary">Mis turnos</Button>
+            </Link>
+          ) : (
+            <Link href="/login">
+              <Button size="lg" variant="secondary">Iniciar sesión</Button>
+            </Link>
+          )}
         </div>
       </div>
 
